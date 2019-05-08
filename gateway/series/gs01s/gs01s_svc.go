@@ -12,7 +12,7 @@ const (
 	ReportTypeGPRP     = "GPRP"
 	ReportTypeSRRP     = "SRRP"
 	ReportHeader       = "$"
-	ReportSparator     = "$"
+	ReportSparator     = ","
 	ReportMinimalArray = 5
 )
 
@@ -30,8 +30,12 @@ func (ss *service) Validate() error {
 	}
 	v = strings.TrimLeft(v, ReportHeader)
 	vv := strings.Split(v, ReportSparator)
-	if !validArray(vv) {
-		return fmt.Errorf("Invalid Header or data long")
+	if !minimalArray(vv) {
+		return fmt.Errorf("Invalid data long")
+	}
+
+	if !(vv[0] == ReportTypeGPRP || vv[0] == ReportTypeSRRP) {
+		return fmt.Errorf("Invalid header")
 	}
 
 	return nil
@@ -39,10 +43,6 @@ func (ss *service) Validate() error {
 
 func hasHeader(v string) bool {
 	return strings.HasPrefix(v, ReportHeader)
-}
-
-func validArray(v []string) bool {
-	return minimalArray(v) && (v[0] == ReportTypeGPRP || v[0] == ReportTypeSRRP)
 }
 
 func minimalArray(v []string) bool {
@@ -78,6 +78,6 @@ func (ss *service) Parse() (*series.BLEAds, error) {
 	return data, nil
 }
 
-func New() {
-
+func New(data string) series.Service {
+	return &service{data}
 }
