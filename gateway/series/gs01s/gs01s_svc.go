@@ -58,8 +58,8 @@ func (ss *service) Parse() (*series.BLEAds, error) {
 	v := strings.TrimLeft(ss.bleAds, ReportHeader)
 	vv := strings.Split(v, ReportSparator)
 	data.ReportType = vv[0]
-	data.TagID = vv[1]
-	data.GatewayID = vv[2]
+	data.TrackingId = vv[1]
+	data.SourceId = vv[2]
 	rssi, err := strconv.Atoi(vv[3])
 	if err != nil {
 		return nil, err
